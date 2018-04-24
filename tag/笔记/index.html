@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1, minimum-scale=1, maximum-scale=1">
+<meta name="renderer" content="webkit">
+<meta name="google" value="notranslate">
+<meta name="robots" content="index,follow">
+
+
+<meta name="theme-color" content="#795548">
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="兔子的咖啡馆">
+<meta name="twitter:description" content="喝点什么吧">
+<meta name="twitter:image:src" content="https://rabbee.me/images/logo.png">
+
+<meta property="og:url" content="https://rabbee.me">
+<meta property="og:title" content="兔子的咖啡馆">
+<meta property="og:description" content="喝点什么吧">
+<meta property="og:site_name" content="兔子的咖啡馆">
+<meta property="og:image" content="https://rabbee.me/images/logo.png">
+<meta property="og:type" content="website">
+<meta name="robots" content="noodp">
+
+<meta itemprop="name" content="兔子的咖啡馆">
+<meta itemprop="description" content="喝点什么吧">
+<meta itemprop="image" content="https://rabbee.me/images/logo.png">
+
+<link rel="canonical" href="https://rabbee.me">
+
+<link rel="shortcut icon" href="/images/logo.png">
+<link rel="apple-itouch-icon" href="/images/logo.png">
+<link rel="stylesheet" href="/bundle/index.css">
+
+
+<style type="text/css">  
+    a{  
+      color: #795548;  
+    }  
+    .footer {
+        color: #795548;
+    }
+    .main.archive a, .main.tag a {
+        border-bottom: 1px dashed #795548;
+        color: #795548;
+    }
+    
+    .main.page .article-list .article .tags .tag {
+        color: #7f8c8d;
+    }
+    
+   </style>
+   
+<script type="text/javascript">
+    var timeSinceLang = {
+        year: '年前',
+        month: '个月前',
+        day: '天前',
+        hour: '小时前',
+        minute: '分钟前',
+        second: '秒前'
+    };
+    var root = '';
+</script>
+
+<script type="text/javascript">
+    var conn, reloadTimer, connectTimer;
+    var connect = function() {
+        conn = new WebSocket('ws://' + location.host + '/live');
+        conn.onmessage = function(event) {
+            if (event.data === 'change') {
+                if (reloadTimer) clearTimeout(reloadTimer);
+                reloadTimer = setTimeout(function() {
+                    window.location.reload();
+                }, 200);
+            }
+        };
+        conn.onclose = function() {
+            if (connectTimer) clearTimeout(connectTimer);
+            connectTimer = setTimeout(function() {
+                connect();
+            }, 1000);
+        };
+    };
+    connect();
+</script>
+
+
+        <meta name="keywords" content="喝点什么吧">
+        <meta name="description" content="喝点什么吧">
+        <title>兔子的咖啡馆</title>
+    </head>
+    <body>
+        <article class="container">
+            <header class="header-wrap">
+  <a class="index" href="/">
+    
+    <img class="logo" src="/images/logo.png" />
+    
+  </a>
+  <ul class="menu">
+    <li class="menu-item">
+      <a href="/archive.html" >归档</a>
+    </li>
+    <li class="menu-item">
+      <a href="/tag.html" >标签</a>
+    </li>
+    
+    <li class="menu-item">
+      <a href="/atom.xml"  >订阅</a>
+    </li> 
+  </ul>
+</header>
+            <article class="main page">
+                <header class="header site">
+                    
+                        
+                        <h1 class="tag">笔记</h1>
+                        <h2 class="tag-sub">3 篇文章</h2>
+                    
+                </header>
+                <ul class="article-list">
+                    
+                    <li class="article mdl-shadow--4px">
+                        <a class="title" href="/misc/2017/06/07/%e5%b9%bf%e5%b7%a5%e6%95%99%e5%8a%a1%e7%b3%bb%e7%bb%9f%e5%8a%a9%e6%89%8b%e7%ac%94%e8%ae%b0.html">广工教务系统助手笔记</a>
+                        <div class="cover" style="background-image:url(/images/%e5%b9%bf%e5%b7%a5%e6%95%99%e5%8a%a1%e7%b3%bb%e7%bb%9f%e5%8a%a9%e6%89%8b%e7%ac%94%e8%ae%b0/menu.png);"></div>
+                        <section class="preview content"><p>在我们学校的教务系统里，如果你想查成绩，那得先把这学期的老师都评价完。在旧版教务系统中，教师评价一直是一个很烦人的东西：一个教师就要填10个左右的问题，而且同一个教师可能出现多次（课程和实验分开）。那个时候有一个APP叫做“广工校园通”，应该是出自某个工作室之手。但今年寒假我开始发现它不能用了，不知道是因为教务系统改版，他们没有精力做，还是据说这个APP是当时他们参加比赛做的，比完就没人维护了。于是寒假前一段时间我花了点时间抓新教务系统的包，把教师评价做了出来。当时只支持对所有教师评价，无论之前有没有评价过。这里要吐槽一点：后来评价的内容将覆盖之前评价的内容。这阵子突发奇想：不如把这个功能弄进小程序吧，反正正好体验下这么久以来都没碰过的小程序。于是乎就有了这篇东西～</p>
+</section>
+                        <section class="info">
+                            <span class="avatar" style="background-image: url(/images/rin.png);"></span>
+                            <a class="name" href="/about.me.html">Rabbee</a>
+                            
+                            <span class="date" data-time="1496802674"><span class="from"></span></span>
+                            
+                            <span class="tags">
+                            <a class="tag" href="/tag/%e7%ac%94%e8%ae%b0/index.html">笔记</a>
+                            </span>
+                        </section>
+                    </li>
+                    
+                    <li class="article mdl-shadow--4px">
+                        <a class="title" href="/misc/2017/05/18/archlinux%e5%ae%89%e8%a3%85%e7%ac%94%e8%ae%b0.html">ArchLinux安装笔记</a>
+                        <div class="cover" style="background-image:url(/images/ArchLinux%e5%ae%89%e8%a3%85%e8%ae%b0%e5%bd%95/Archlinux_blue.jpg);"></div>
+                        <section class="preview content"><p>前段时间我发过一个Manjaro发行版的安装记录，这个ArchLinux就是它的爸爸啦。<br />
+除去它对新人非常不友好的安装过程，它还是一个很棒的发行版。它也是我现在长期使用的发行版。<br />
+这篇文文记录下自己的安装过程，毕竟以后可能很久都不会重装系统了，会忘记，逃)<br />
+欢迎没有使用过的朋友尝试尝试～</p>
+</section>
+                        <section class="info">
+                            <span class="avatar" style="background-image: url(/images/rin.png);"></span>
+                            <a class="name" href="/about.me.html">Rabbee</a>
+                            
+                            <span class="date" data-time="1495103215"><span class="from"></span></span>
+                            
+                            <span class="tags">
+                            <a class="tag" href="/tag/%e7%ac%94%e8%ae%b0/index.html">笔记</a>
+                            </span>
+                        </section>
+                    </li>
+                    
+                    <li class="article mdl-shadow--4px">
+                        <a class="title" href="/misc/2017/03/09/manjaro%e5%ae%89%e8%a3%85%e7%ac%94%e8%ae%b0.html">Manjaro安装笔记</a>
+                        <div class="cover" style="background-image:url(/images/Manjaro%e5%ae%89%e8%a3%85%e8%ae%b0/manjaro.jpg);"></div>
+                        <section class="preview content"><p>Manjaro是一款基于Arch Linux的发行版。 继承了Arch滚动更新的特点，可以使用AUR上最齐全的软件。</p>
+
+<p>针对Arch Linux对新手不友好的“弱点”，Manjaro采用图形化安装程序，让安装过程变得非常简单，同时把安装Arch Linux后大量的繁琐工作——驱动、X服务、桌面环境、解码器等————全部集成了，为新手解决了大麻烦。</p>
+</section>
+                        <section class="info">
+                            <span class="avatar" style="background-image: url(/images/rin.png);"></span>
+                            <a class="name" href="/about.me.html">Rabbee</a>
+                            
+                            <span class="date" data-time="1488990108"><span class="from"></span></span>
+                            
+                            <span class="tags">
+                            <a class="tag" href="/tag/%e7%ac%94%e8%ae%b0/index.html">笔记</a>
+                            </span>
+                        </section>
+                    </li>
+                    
+                </ul>
+                <section class="page-nav">
+                    
+                    
+                    
+                </section>
+            </article>
+        </article>
+        <footer class="footer">
+    <span class="copyright">
+        兔子的咖啡馆 © 2017 - 
+        <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>
+    </span>
+    <span class="publish">Powered by <a href="#" target="_blank">Yo</a></span>
+</footer>
+
+    </body>
+    <script src="/bundle/index.js"></script>
+</html>
