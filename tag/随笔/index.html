@@ -16,25 +16,25 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="兔子的咖啡馆">
 <meta name="twitter:description" content="喝点什么吧">
-<meta name="twitter:image:src" content="https://rabbee.me/images/logo.png">
+<meta name="twitter:image:src" content="https://rabbee.github.io/yo_demo/images/logo.png">
 
-<meta property="og:url" content="https://rabbee.me">
+<meta property="og:url" content="https://rabbee.github.io">
 <meta property="og:title" content="兔子的咖啡馆">
 <meta property="og:description" content="喝点什么吧">
 <meta property="og:site_name" content="兔子的咖啡馆">
-<meta property="og:image" content="https://rabbee.me/images/logo.png">
+<meta property="og:image" content="https://rabbee.github.io/yo_demo/images/logo.png">
 <meta property="og:type" content="website">
 <meta name="robots" content="noodp">
 
 <meta itemprop="name" content="兔子的咖啡馆">
 <meta itemprop="description" content="喝点什么吧">
-<meta itemprop="image" content="https://rabbee.me/images/logo.png">
+<meta itemprop="image" content="https://rabbee.github.io/yo_demo/images/logo.png">
 
-<link rel="canonical" href="https://rabbee.me">
+<link rel="canonical" href="https://rabbee.github.io">
 
-<link rel="shortcut icon" href="/images/logo.png">
-<link rel="apple-itouch-icon" href="/images/logo.png">
-<link rel="stylesheet" href="/bundle/index.css">
+<link rel="shortcut icon" href="/yo_demo/images/logo.png">
+<link rel="apple-itouch-icon" href="/yo_demo/images/logo.png">
+<link rel="stylesheet" href="/yo_demo/bundle/index.css">
 
 
 <style type="text/css">  
@@ -64,29 +64,7 @@
         minute: '分钟前',
         second: '秒前'
     };
-    var root = '';
-</script>
-
-<script type="text/javascript">
-    var conn, reloadTimer, connectTimer;
-    var connect = function() {
-        conn = new WebSocket('ws://' + location.host + '/live');
-        conn.onmessage = function(event) {
-            if (event.data === 'change') {
-                if (reloadTimer) clearTimeout(reloadTimer);
-                reloadTimer = setTimeout(function() {
-                    window.location.reload();
-                }, 200);
-            }
-        };
-        conn.onclose = function() {
-            if (connectTimer) clearTimeout(connectTimer);
-            connectTimer = setTimeout(function() {
-                connect();
-            }, 1000);
-        };
-    };
-    connect();
+    var root = '\/yo_demo';
 </script>
 
 
@@ -97,21 +75,21 @@
     <body>
         <article class="container">
             <header class="header-wrap">
-  <a class="index" href="/">
+  <a class="index" href="/yo_demo/">
     
-    <img class="logo" src="/images/logo.png" />
+    <img class="logo" src="/yo_demo/images/logo.png" />
     
   </a>
   <ul class="menu">
     <li class="menu-item">
-      <a href="/archive.html" >归档</a>
+      <a href="/yo_demo/archive.html" >归档</a>
     </li>
     <li class="menu-item">
-      <a href="/tag.html" >标签</a>
+      <a href="/yo_demo/tag.html" >标签</a>
     </li>
     
     <li class="menu-item">
-      <a href="/atom.xml"  >订阅</a>
+      <a href="/yo_demo/atom.xml"  >订阅</a>
     </li> 
   </ul>
 </header>
@@ -126,7 +104,7 @@
                 <ul class="article-list">
                     
                     <li class="article mdl-shadow--4px">
-                        <a class="title" href="/misc/2017/04/10/%e5%9b%9b%e6%9c%88%e7%94%9c.html">四月甜</a>
+                        <a class="title" href="/yo_demo/2017/04/10/%e5%9b%9b%e6%9c%88%e7%94%9c.html">四月甜</a>
                         <div class="cover" style="background-image:url(/images/%e5%9b%9b%e6%9c%88%e7%94%9c/desktop.jpg);"></div>
                         <section class="preview content"><h3>你好，四月 、</h3>
 
@@ -137,13 +115,13 @@
 <p>下雨是极好的，我已经在闷热的天气下憋不过气来了。 以前会因为下暴雨而不去上课，然而全班同学里到达课室的也不过数人，他们都是值得敬佩的，当然老师也是值得敬佩的。 以前大学一二时也遇到过下暴雨，但完全相反的情况，全班同学几乎全部到齐，但是老师因为暴雨而姗姗来迟，大概拖了一节课后才正式上课。</p>
 </section>
                         <section class="info">
-                            <span class="avatar" style="background-image: url(/images/rin.png);"></span>
-                            <a class="name" href="/about.me.html">Rabbee</a>
+                            <span class="avatar" style="background-image: url(/yo_demo/images/rin.png);"></span>
+                            <a class="name" href="/yo_demo/about.me.html">Rabbee</a>
                             
                             <span class="date" data-time="1491831699"><span class="from"></span></span>
                             
                             <span class="tags">
-                            <a class="tag" href="/tag/%e9%9a%8f%e7%ac%94/index.html">随笔</a>
+                            <a class="tag" href="/yo_demo/tag/%e9%9a%8f%e7%ac%94/index.html">随笔</a>
                             </span>
                         </section>
                     </li>
@@ -167,5 +145,5 @@
 </footer>
 
     </body>
-    <script src="/bundle/index.js"></script>
+    <script src="/yo_demo/bundle/index.js"></script>
 </html>
