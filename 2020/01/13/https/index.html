@@ -1,0 +1,66 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta name=author content="Rabbee"><meta name=description content="兔子的咖啡馆"><meta name=keywords content="兔子的咖啡馆"><link rel=prev href=/2017/06/07/gdut-senate-manager-system/><link rel=canonical href=/2020/01/13/https/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><meta name=msapplication-TileColor content="#da532c"><meta name=theme-color content="#ffffff"><title>证书配置 | 兔子的咖啡馆</title><meta name=title content="证书配置 | 兔子的咖啡馆"><link rel=stylesheet href=/font/iconfont.css><link rel=stylesheet href=/css/main.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":""},"articleSection":"posts","name":"证书配置","headline":"证书配置","description":"记录申请泛域名证书的过程\n1. 安装acme.sh 通过命令行安装\ncurl https:\/\/get.acme.sh | sh 安装后自动创建了一个定时任务\ncrontab -l # 52 0 * * * \x26#34;\/home\/rabbee\/.acme.sh\x26#34;\/acme.sh --cron --home \x26#34;\/home\/rabbee\/.acme.sh\x26#34; \x26gt; \/dev\/null 2. 生成证书 这里使用dns的方式来通过验证\n这里使用token来使用dns提供商的管理接口\n阿里云 ### 配置你的登录密钥 export Ali_Key=\x26#34;\x26#34; export Ali_Secret=\x26#34;\x26#34; ### 生成证书 acme.sh --issue --dns dns_ali -d rabbee.cn -d \x26#39;*.rabbee.cn\x26#39; # [Sun Jan 12 17:13:56 CST 2020] Your cert is in \/home\/rabbee\/.acme.sh\/rabbee.cn\/rabbee.cn.cer # [Sun Jan 12 17:13:56 CST 2020] Your cert key is in \/home\/rabbee\/.acme.sh\/rabbee.cn\/rabbee.cn.key # [Sun Jan 12 17:13:56 CST 2020] v2 chain.","inLanguage":"zh-cn","author":"Rabbee","creator":"Rabbee","publisher":"Rabbee","accountablePerson":"Rabbee","copyrightHolder":"Rabbee","copyrightYear":"2020","datePublished":"2020-01-13 01:15:36 \x2b0800 CST","dateModified":"2020-01-13 01:15:36 \x2b0800 CST","url":"\/2020\/01\/13\/https\/","wordCount":"290","keywords":["兔子的咖啡馆"]}</script></head><body><div class=wrapper><nav class=navbar><div class=container><div class="navbar-header header-logo"><a href=javascript:void(0); class=theme-switch><i class="iconfont icon-xihuan"></i></a>&nbsp;<a href>兔子的咖啡馆</a></div><div class="menu navbar-right"><a class=menu-item href=/posts/>文章</a>
+<a class=menu-item href=/categories/>目录</a>
+<a class=menu-item href=/tags/>标签</a>
+<a class=menu-item href=/about/>关于</a></div></div></nav><nav class=navbar-mobile id=nav-mobile style=display:none><div class=container><div class=navbar-header><div><a href=javascript:void(0); class=theme-switch><i class="iconfont icon-xihuan"></i></a>&nbsp;<a href>兔子的咖啡馆</a></div><div class=menu-toggle><span></span><span></span><span></span></div></div><div class=menu id=mobile-menu><a class=menu-item href=/posts/>文章</a>
+<a class=menu-item href=/categories/>目录</a>
+<a class=menu-item href=/tags/>标签</a>
+<a class=menu-item href=/about/>关于</a></div></div></nav><main class=main><div class=container><article class=post-warp itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline">证书配置</h1><div class=post-meta>Written by <a itemprop=name href rel=author>Rabbee</a> with ♥
+<span class=post-time>on <time datetime=2020-01-13 itemprop=datePublished>January 13, 2020</time></span>
+in</div></header><div class=post-content><p>记录申请泛域名证书的过程</p><h2 id=1-acmeshhttpsgithubcomneilpangacmeshwikie8afb4e6988e1-e5ae89e8a385-acmesh>1. <a href=https://github.com/Neilpang/acme.sh/wiki/%E8%AF%B4%E6%98%8E#1-%E5%AE%89%E8%A3%85-acmesh>安装acme.sh</a></h2><p>通过命令行安装</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>curl  https://get.acme.sh | sh
+</code></pre></div><p>安装后自动创建了一个定时任务</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>crontab -l
+<span style=color:#75715e># 52 0 * * * &#34;/home/rabbee/.acme.sh&#34;/acme.sh --cron --home &#34;/home/rabbee/.acme.sh&#34; &gt; /dev/null</span>
+</code></pre></div><h2 id=2-httpsgithubcomneilpangacmeshwikie8afb4e6988e2-e7949fe68890e8af81e4b9a6>2. <a href=https://github.com/Neilpang/acme.sh/wiki/%E8%AF%B4%E6%98%8E#2-%E7%94%9F%E6%88%90%E8%AF%81%E4%B9%A6>生成证书</a></h2><p>这里使用dns的方式来通过验证</p><p>这里使用token来使用dns提供商的管理接口</p><h3 id=heading><code>阿里云</code></h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>### 配置你的登录密钥</span>
+export Ali_Key<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span>
+export Ali_Secret<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span>
+
+<span style=color:#75715e>### 生成证书</span>
+acme.sh --issue --dns dns_ali -d rabbee.cn -d <span style=color:#e6db74>&#39;*.rabbee.cn&#39;</span>
+<span style=color:#75715e># [Sun Jan 12 17:13:56 CST 2020] Your cert is in  /home/rabbee/.acme.sh/rabbee.cn/rabbee.cn.cer</span>
+<span style=color:#75715e># [Sun Jan 12 17:13:56 CST 2020] Your cert key is in  /home/rabbee/.acme.sh/rabbee.cn/rabbee.cn.key</span>
+<span style=color:#75715e># [Sun Jan 12 17:13:56 CST 2020] v2 chain.</span>
+<span style=color:#75715e># [Sun Jan 12 17:13:56 CST 2020] The intermediate CA cert is in  /home/rabbee/.acme.sh/rabbee.cn/ca.cer</span>
+<span style=color:#75715e># [Sun Jan 12 17:13:56 CST 2020] And the full chain certs is there:  /home/rabbee/.acme.sh/rabbee.cn/fullchain.cer</span>
+<span style=color:#75715e># [Sun Jan 12 17:13:56 CST 2020] _on_issue_success</span>
+</code></pre></div><p>显示以上信息就是成功了</p><h3 id=cloudflare><code>cloudflare</code></h3><p>从<a href=https://dash.cloudflare.com/profile/api-tokens>这里</a>获取API key</p><blockquote><p>这里要使用Global API Key，<a href=https://github.com/Neilpang/acme.sh/issues/1976>Origin CA Key在这里是不能使用的</a></p></blockquote><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>### 配置你的登录密钥</span>
+export CF_Key<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span>
+export CF_Email<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span>
+
+<span style=color:#75715e>### 生成证书</span>
+acme.sh --issue --dns dns_cf -d rabbee.me -d <span style=color:#e6db74>&#39;*.rabbee.me&#39;</span>
+<span style=color:#75715e># [Sun Jan 12 17:53:09 CST 2020] Your cert is in  /home/rabbee/.acme.sh/rabbee.me/rabbee.me.cer</span>
+<span style=color:#75715e># [Sun Jan 12 17:53:09 CST 2020] Your cert key is in  /home/rabbee/.acme.sh/rabbee.me/rabbee.me.key</span>
+<span style=color:#75715e># [Sun Jan 12 17:53:09 CST 2020] v2 chain.</span>
+<span style=color:#75715e># [Sun Jan 12 17:53:09 CST 2020] The intermediate CA cert is in  /home/rabbee/.acme.sh/rabbee.me/ca.cer</span>
+<span style=color:#75715e># [Sun Jan 12 17:53:09 CST 2020] And the full chain certs is there:  /home/rabbee/.acme.sh/rabbee.me/fullchain.cer       [Sun Jan 12 17:53:09 CST 2020] _on_issue_success</span>
+</code></pre></div><p>显示以上信息就是成功了</p><h2 id=3-httpsgithubcomneilpangacmeshwikie8afb4e6988e3-copye5ae89e8a385-e8af81e4b9a6>3. <a href=https://github.com/Neilpang/acme.sh/wiki/%E8%AF%B4%E6%98%8E#3-copy%E5%AE%89%E8%A3%85-%E8%AF%81%E4%B9%A6>安装证书</a></h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir -p /etc/nginx/cert/rabbee.cn
+mkdir -p /etc/nginx/cert/rabbee.me
+chown -R rabbee:www-data /etc/nginx/cert
+
+acme.sh --install-cert -d rabbee.cn <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--cert-file      /etc/nginx/cert/rabbee.cn/cert  <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--key-file       /etc/nginx/cert/rabbee.cn/key  <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--fullchain-file /etc/nginx/cert/rabbee.cn/fullchain
+--reloadcmd  <span style=color:#e6db74>&#34;systemctl force-reload nginx&#34;</span>
+
+acme.sh --install-cert -d rabbee.me <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--cert-file      /etc/nginx/cert/rabbee.me/cert  <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--key-file       /etc/nginx/cert/rabbee.me/key  <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>--fullchain-file /etc/nginx/cert/rabbee.me/fullchain
+--reloadcmd  <span style=color:#e6db74>&#34;systemctl force-reload nginx&#34;</span>
+</code></pre></div><blockquote><p>目前证书在 60 天以后会自动更新, 你无需任何操作. 今后有可能会缩短这个时间, 不过都是自动的, 你不用关心.</p></blockquote><h2 id=4->4. 配置证书</h2><p>在<code>nginx</code>的配置文件中加入<code>ssl_certificate</code>和<code>ssl_certificate_key</code></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-nginx data-lang=nginx><span style=color:#66d9ef>server</span> {
+  <span style=color:#75715e># ...
+</span><span style=color:#75715e></span>	<span style=color:#f92672>listen</span>               <span style=color:#ae81ff>443</span> <span style=color:#e6db74>ssl</span>;
+	<span style=color:#f92672>listen</span>               <span style=color:#e6db74>[::]:443</span> <span style=color:#e6db74>ssl</span>;
+	<span style=color:#f92672>ssl_certificate</span>      <span style=color:#e6db74>/etc/nginx/cert/rabbee.cn/fullchain</span>;
+	<span style=color:#f92672>ssl_certificate_key</span>  <span style=color:#e6db74>/etc/nginx/cert/rabbee.cn/key</span>;
+	<span style=color:#f92672>ssl_protocols</span>        <span style=color:#e6db74>TLSv1</span> <span style=color:#e6db74>TLSv1.1</span> <span style=color:#e6db74>TLSv1.2</span>;
+	<span style=color:#f92672>ssl_ciphers</span>          <span style=color:#e6db74>HIGH:!aNULL:!MD5</span>;
+  <span style=color:#75715e># ...
+</span><span style=color:#75715e></span>}
+</code></pre></div></div><div class=post-copyright><p class=copyright-item><span>Author:</span>
+<span>Rabbee</span></p><p class=copyright-item><span>Link:</span>
+<a href=/2020/01/13/https/>/2020/01/13/https/</span></p><p class="copyright-item lincese">本文采用<a rel=license href=http://creativecommons.org/licenses/by-nc/4.0/ target=_blank>知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p></div><div class=post-tags><section><a href=javascript:window.history.back();>back</a></span> ·
+<span><a href>home</a></span></section></div><div class=post-nav><a href=/2017/06/07/gdut-senate-manager-system/ class=prev rel=prev title=广工教务系统助手><i class="iconfont icon-left"></i>&nbsp;广工教务系统助手</a></div><div class=post-comment><div id=disqus_thread></div><script type=text/javascript>var d=document,s=d.createElement('script');s.src='//'+'rabbee'+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);</script><noscript>Please enable JavaScript to view the <a href=http://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div></article></div></main><footer class=footer><div class=copyright>&copy;
+<span itemprop=copyrightYear>2017 - 2020</span>
+<span class=with-love><i class="iconfont icon-love"></i></span><span class=author itemprop=copyrightHolder><a href>Rabbee</a> |</span>
+<span>Powered by <a href=https://gohugo.io/ target=_blank rel="external nofollow">Hugo</a> & <a href=https://github.com/liuzc/leaveit target=_blank rel="external nofollow">LeaveIt</a></span></div></footer><script src=/js/vendor_no_gallery.min.js async></script></div></body></html>
