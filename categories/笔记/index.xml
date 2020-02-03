@@ -1,34 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>笔记 on 兔子的咖啡馆</title><link>/categories/%E7%AC%94%E8%AE%B0/</link><description>Recent content in 笔记 on 兔子的咖啡馆</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 07 Jun 2017 10:31:14 +0000</lastBuildDate><atom:link href="/categories/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml"/><item><title>广工教务系统助手</title><link>/2017/06/07/gdut-senate-manager-system/</link><pubDate>Wed, 07 Jun 2017 10:31:14 +0000</pubDate><guid>/2017/06/07/gdut-senate-manager-system/</guid><description>在我们学校的教务系统里，如果你想查成绩，那得先把这学期的老师都评价完。在旧版教务系统中，教师评价一直是一个很烦人的东西：一个教师就要填10个左右的问题，而且同一个教师可能出现多次（课程和实验分开）。那个时候有一个APP叫做“广工校园通”，应该是出自某个工作室之手。但今年寒假我开始发现它不能用了，不知道是因为教务系统改版，他们没有精力做，还是据说这个APP是当时他们参加比赛做的，比完就没人维护了。于是寒假前一段时间我花了点时间抓新教务系统的包，把教师评价做了出来。当时只支持对所有教师评价，无论之前有没有评价过。这里要吐槽一点：后来评价的内容将覆盖之前评价的内容。这阵子突发奇想：不如把这个功能弄进小程序吧，反正正好体验下这么久以来都没碰过的小程序。于是乎就有了这篇东西～
-抓包 工具选择 这里我用的是Firefox的拓展：HttpFox
-开始捉包吧 登录 打开非常炫酷的教务系统登录界面
-打开httpfox的窗口，点击开始。
-然后教务系统输入账号密码登录吧～登录进去后把HttpFox暂停了，以免一直通讯的包都捉进来，我们现在要的是登录的包。
-就下来我们看到如下的登录包
-恩，这就是我们要的东西。之后要什么东西，拿着下面这个Cookies就有了通行证啦～
-微信小程序 注册完小程序后，我直接跳过了官网文档的设计部分，毕竟先实现功能嘛，界面什么的后面再改。开发过程中遇到了一些坑，下面来说下这些坑。
+抓包 工具选择 这里我用的是Firefox的拓展：HttpFox 开始捉包吧 登录 打开非常炫酷的教务系统登录界面 打开httpfox的窗口，点击开始。 然后教务系统输入账号密码登录吧～登录进去后把HttpFox暂停了，以免一直通讯的包都捉进来，我们现在要的是登录的包。
+就下来我们看到如下的登录包 恩，这就是我们要的东西。之后要什么东西，拿着下面这个Cookies就有了通行证啦～ 微信小程序 注册完小程序后，我直接跳过了官网文档的设计部分，毕竟先实现功能嘛，界面什么的后面再改。开发过程中遇到了一些坑，下面来说下这些坑。
 1. 请求必须是Https 仔细看看国内的很多网站，其实都没有使用https。这里不能怪教务系统吧不使用https，毕竟用了的话我们也不好通过捉包来干这事。所以才有了后文的后台程序，提供一个https转发请求的功能。也就是使用自己的服务器来接收小程序的https请求，再用http请求与教务系统通讯。 2. 设置页面的后台数据 setData 这里想用setData({})修改后台数据中某个数组中的值。于是乎有了下面的代码。
-Page({ data: { strs: [ &#39;abc&#39;, &#39;def&#39;, &#39;ghj&#39;, &#39;klm&#39; ], temp: &#39;&#39; }, //事件处理函数 ... changeStrs: function(e){ var index = e.currentTarget.id; this.data.strs[index] = str; this.setData({ strs: this.data.strs }); } }) 后台 其实我也不会什么后台，PHP、NodeJs、Javaweb、Asp.net之流什么的也没玩过。只是因为最近&amp;rdquo;Py交易&amp;rdquo;多，所以才用了Python里的Flask框架。这里就没什么技术问题了。都是很简单的请求。这里贴上些简单的代码。
-登录请求 登录 @app.</description></item><item><title>ArchLinux安装笔记</title><link>/2017/05/18/archlinux-install-note/</link><pubDate>Thu, 18 May 2017 18:26:55 +0000</pubDate><guid>/2017/05/18/archlinux-install-note/</guid><description>前段时间我发过一个Manjaro发行版的安装记录，这个ArchLinux就是它的爸爸啦。
+Page({ data: { strs: [ &amp;#39;abc&amp;#39;, &amp;#39;def&amp;#39;, &amp;#39;ghj&amp;#39;, &amp;#39;klm&amp;#39; ], temp: &amp;#39;&amp;#39; }, //事件处理函数 ... changeStrs: function(e){ var index = e.currentTarget.id; this.data.strs[index] = str; this.setData({ strs: this.data.strs }); } }) 后台 其实我也不会什么后台，PHP、NodeJs、Javaweb、Asp.net之流什么的也没玩过。只是因为最近&amp;quot;Py交易&amp;quot;多，所以才用了Python里的Flask框架。这里就没什么技术问题了。都是很简单的请求。这里贴上些简单的代码。
+登录请求 登录 @app.route(&amp;#39;/api/gdut/login&amp;#39;, methods=[&amp;#39;GET&amp;#39;, &amp;#39;POST&amp;#39;]) def login(): if request.</description></item><item><title>ArchLinux安装笔记</title><link>/2017/05/18/archlinux-install-note/</link><pubDate>Thu, 18 May 2017 18:26:55 +0000</pubDate><guid>/2017/05/18/archlinux-install-note/</guid><description>前段时间我发过一个Manjaro发行版的安装记录，这个ArchLinux就是它的爸爸啦。
 除去它对新人非常不友好的安装过程，它还是一个很棒的发行版。它也是我现在长期使用的发行版。
 这篇文文记录下自己的安装过程，毕竟以后可能很久都不会重装系统了，会忘记，逃)
 欢迎没有使用过的朋友尝试尝试～
-注意事项 桌面环境(DE)选择: Gnome.
-引导: Uefi.
-磁盘类型: GPT.
-若你电脑不是UEFI+GPT,请谨慎参考. 右转Arck Wiki
-系统安装过程请保持接线联网,DE安装完成前不使用Wifi.
-系统安装 获取镜像 官方源
-USTC源 参考Arck Wiki Arck Wiki 以后你会有很多机会跟它打交道,好好收藏. Installation guide 安装指南. 安装过程中有什么不明白的可以查询. General recommendations 安装后的推荐. 系统安装完成后可以参考这里完善你的个人系统. List of applications 软件列表. 在这个软件分类里面你可以很轻松的找到想要的软件. 一. 动手安装 1. 把镜像刻录进U盘 Linux环境下可以在终端直接使用dd命令
-sudo dd if=&amp;quot;&amp;quot; of=/dev/sd* bs=8M status=progress Windows环境下推荐使用rufus工具,当然你也可以使用UltraISO
-2. 分区+格式化 我们使用fdisk这个工具 * 列出当前分区情况</description></item><item><title>Manjaro安装笔记</title><link>/2017/03/09/manjaro-install-note/</link><pubDate>Thu, 09 Mar 2017 00:21:48 +0000</pubDate><guid>/2017/03/09/manjaro-install-note/</guid><description>Manjaro是一款基于Arch Linux的发行版。 继承了Arch滚动更新的特点，可以使用AUR上最齐全的软件。
+注意事项 桌面环境(DE)选择: Gnome. 引导: Uefi. 磁盘类型: GPT. 若你电脑不是UEFI+GPT,请谨慎参考. 右转Arck Wiki 系统安装过程请保持接线联网,DE安装完成前不使用Wifi. 系统安装 获取镜像 官方源 USTC源 参考Arck Wiki Arck Wiki 以后你会有很多机会跟它打交道,好好收藏. Installation guide 安装指南. 安装过程中有什么不明白的可以查询. General recommendations 安装后的推荐. 系统安装完成后可以参考这里完善你的个人系统. List of applications 软件列表. 在这个软件分类里面你可以很轻松的找到想要的软件. 一. 动手安装 1. 把镜像刻录进U盘 Linux环境下可以在终端直接使用dd命令 sudo dd if=&amp;#34;&amp;#34; of=/dev/sd* bs=8M status=progress Windows环境下推荐使用rufus工具,当然你也可以使用UltraISO
+2. 分区+格式化 我们使用fdisk这个工具
+列出当前分区情况 fdisk -l 给某分区格式化 mkfs.</description></item><item><title>Manjaro安装笔记</title><link>/2017/03/09/manjaro-install-note/</link><pubDate>Thu, 09 Mar 2017 00:21:48 +0000</pubDate><guid>/2017/03/09/manjaro-install-note/</guid><description>Manjaro是一款基于Arch Linux的发行版。 继承了Arch滚动更新的特点，可以使用AUR上最齐全的软件。
 针对Arch Linux对新手不友好的“弱点”，Manjaro采用图形化安装程序，让安装过程变得非常简单，同时把安装Arch Linux后大量的繁琐工作——驱动、X服务、桌面环境、解码器等————全部集成了，为新手解决了大麻烦。
-配置软件源 安装好后第一步是根据软件源的速度排列源(在终端输入）
-sudo pacman-mirrors -g Wiki上一个优化机械硬盘的命令，类似于磁盘整理（固态硬盘跳过这步）
-sudo pacman-optimize &amp;amp;&amp;amp; sync 更新系统
-sudo pacman -Syyu 完成以上步骤后，可添加archlinuxCN源，方便我们安装等软件
-sudo nano /etc/pacman.conf 在打开的文件最后黏贴上以下几行：（这里用的中科大的源）
-# USTC [archlinuxcn] SigLevel = Optional TrustedOnly Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch 之后更新一下
-sudo pacman -Syyu 导入 GPG key
-sudo pacman -S archlinuxcn-keyring 现在可以愉快地玩耍啦
-安装中文输入法 安装搜狗拼音
-sudo pacman -S fcitx-sogoupinyin sudo pacman -S fcitx-im # 全部安装 sudo pacman -S fcitx-configtool # 图形化配置工具 之后更改 ~/.</description></item></channel></rss>
+配置软件源 安装好后第一步是根据软件源的速度排列源(在终端输入） sudo pacman-mirrors -g Wiki上一个优化机械硬盘的命令，类似于磁盘整理（固态硬盘跳过这步） sudo pacman-optimize &amp;amp;&amp;amp; sync 更新系统 sudo pacman -Syyu 完成以上步骤后，可添加archlinuxCN源，方便我们安装等软件 sudo nano /etc/pacman.conf 在打开的文件最后黏贴上以下几行：（这里用的中科大的源） # USTC [archlinuxcn] SigLevel = Optional TrustedOnly Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch 之后更新一下 sudo pacman -Syyu 导入 GPG key sudo pacman -S archlinuxcn-keyring 现在可以愉快地玩耍啦
+安装中文输入法 安装搜狗拼音 sudo pacman -S fcitx-sogoupinyin sudo pacman -S fcitx-im # 全部安装 sudo pacman -S fcitx-configtool # 图形化配置工具 之后更改 ~/.</description></item></channel></rss>
