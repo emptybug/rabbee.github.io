@@ -1,0 +1,187 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta name=author content="Rabbee"><meta name=description content="兔子的咖啡馆"><meta name=keywords content="兔子的咖啡馆"><link rel=prev href=https://blog.rabbee.cn/2020/01/31/linux-common-commands/><link rel=canonical href=https://blog.rabbee.cn/2020/02/09/crawler-cdp/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><meta name=msapplication-TileColor content="#da532c"><meta name=theme-color content="#ffffff"><title>使用CDP爬取任意网站 | 兔子的咖啡馆</title><meta name=title content="使用CDP爬取任意网站 | 兔子的咖啡馆"><link rel=stylesheet href=/font/iconfont.css><link rel=stylesheet href=/css/main.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.rabbee.cn"},"articleSection":"posts","name":"使用CDP爬取任意网站","headline":"使用CDP爬取任意网站","description":"简介 CDP全称Chrome DevTools Protocol，是一种控制开发者工具的协议。可以通过已开放的功能，来间接操纵浏览器完成一系列自动化工作。\n我使用的工具  chromedp 是一个使用Golang封装CDP的项目，它的功能庞大，包括一些常用的元素点击、滑动事件等等，如果是做 自动化测试 的话，选用它更加合适。 mafredri\/cdp 也是一个使用Golang封装CDP的项目，但是它仅仅是做了封装，并保持整体API风格的统一，减少我们使用过程中的不适。本文将使用这个框架进行开发。 headless-shell 是一个基于debian的无界面chrome浏览器的docker镜像，可以集成到我们常用的微服务架构里。  搭建使用CDP的整体框架 虽然mafredri\/cdp提供了最基础的使用方法，但是我们需要在它的基础上修改，以便能满足我们的需求，和持续稳定爬取的要求。\n初始化与开发者工具的远程连接 var ( cdpHost = \x26#34;127.0.0.1\x26#34; cdpPort = \x26#34;9222\x26#34; devt *devtool.DevTools ) func init() { devt = devtool.New(fmt.Sprintf(\x26#34;http:\/\/%s:%d\x26#34;, cdpHost, cdpPort)) } 通过访问页面来获取所有请求返回的数据 func Run(url string) { ctx, cancel := context.WithTimeout(context.Background(), timeout) \/\/该页面的超时时间，最好增加多一些缓冲时间，不然页面线程可能比获取数据的线程早退出  defer cancel() \/\/打开一个空白页  pt, err := devt.Create(ctx) if err != nil { return } defer devt.Close(ctx, pt) \/\/退出时关闭  conn, err := rpcc.","inLanguage":"zh-cn","author":"Rabbee","creator":"Rabbee","publisher":"Rabbee","accountablePerson":"Rabbee","copyrightHolder":"Rabbee","copyrightYear":"2020","datePublished":"2020-02-09 13:52:09 \x2b0800 CST","dateModified":"2020-02-09 13:52:09 \x2b0800 CST","url":"https:\/\/blog.rabbee.cn\/2020\/02\/09\/crawler-cdp\/","wordCount":"433","keywords":["crawler","chromedp","cdp","headless-shell","docker","golang","兔子的咖啡馆"]}</script></head><body><div class=wrapper><nav class=navbar><div class=container><div class="navbar-header header-logo"><a href=javascript:void(0); class=theme-switch><i class="iconfont icon-xihuan"></i></a>&nbsp;<a href=https://blog.rabbee.cn>兔子的咖啡馆</a></div><div class="menu navbar-right"><a class=menu-item href=/posts/>文章</a>
+<a class=menu-item href=/categories/>目录</a>
+<a class=menu-item href=/tags/>标签</a>
+<a class=menu-item href=/about/>关于</a></div></div></nav><nav class=navbar-mobile id=nav-mobile style=display:none><div class=container><div class=navbar-header><div><a href=javascript:void(0); class=theme-switch><i class="iconfont icon-xihuan"></i></a>&nbsp;<a href=https://blog.rabbee.cn>兔子的咖啡馆</a></div><div class=menu-toggle><span></span><span></span><span></span></div></div><div class=menu id=mobile-menu><a class=menu-item href=/posts/>文章</a>
+<a class=menu-item href=/categories/>目录</a>
+<a class=menu-item href=/tags/>标签</a>
+<a class=menu-item href=/about/>关于</a></div></div></nav><main class=main><div class=container><article class=post-warp itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline">使用CDP爬取任意网站</h1><div class=post-meta>Written by <a itemprop=name href=https://blog.rabbee.cn rel=author>Rabbee</a> with ♥
+<span class=post-time>on <time datetime=2020-02-09 itemprop=datePublished>February 9, 2020</time></span>
+in
+<i class="iconfont icon-folder"></i><span class=post-category><a href=https://blog.rabbee.cn/categories/%E7%88%AC%E8%99%AB/>爬虫</a></span></div></header><div class=post-content><h2 id=简介>简介</h2><p>CDP全称<a href=https://chromedevtools.github.io/devtools-protocol/><code>Chrome DevTools Protocol</code></a>，是一种控制开发者工具的协议。可以通过已开放的功能，来间接操纵浏览器完成一系列自动化工作。</p><h2 id=我使用的工具>我使用的工具</h2><ul><li><a href=https://chromedevtools.github.io/devtools-protocol/><code>chromedp</code></a>
+是一个使用Golang封装CDP的项目，它的功能庞大，包括一些常用的<a href=https://github.com/chromedp/examples/blob/master/click/main.go>元素点击、滑动事件</a>等等，如果是做 自动化测试 的话，选用它更加合适。</li><li><a href=https://github.com/mafredri/cdp><code>mafredri/cdp</code></a>
+也是一个使用Golang封装CDP的项目，但是它仅仅是做了封装，并保持整体API风格的统一，减少我们使用过程中的不适。本文将使用这个框架进行开发。</li><li><a href=https://hub.docker.com/r/chromedp/headless-shell/><code>headless-shell</code></a>
+是一个基于debian的无界面chrome浏览器的docker镜像，可以集成到我们常用的微服务架构里。</li></ul><h2 id=搭建使用cdp的整体框架>搭建使用CDP的整体框架</h2><p>虽然<code>mafredri/cdp</code>提供了最基础的使用方法，但是我们需要在它的基础上修改，以便能满足我们的需求，和持续稳定爬取的要求。</p><h3 id=初始化与开发者工具的远程连接>初始化与开发者工具的远程连接</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-golang data-lang=golang><span style=color:#66d9ef>var</span> (
+  <span style=color:#a6e22e>cdpHost</span> = <span style=color:#e6db74>&#34;127.0.0.1&#34;</span>
+  <span style=color:#a6e22e>cdpPort</span> = <span style=color:#e6db74>&#34;9222&#34;</span>
+  <span style=color:#a6e22e>devt</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>devtool</span>.<span style=color:#a6e22e>DevTools</span>
+)
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>init</span>() {
+  <span style=color:#a6e22e>devt</span> = <span style=color:#a6e22e>devtool</span>.<span style=color:#a6e22e>New</span>(<span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Sprintf</span>(<span style=color:#e6db74>&#34;http://%s:%d&#34;</span>, <span style=color:#a6e22e>cdpHost</span>, <span style=color:#a6e22e>cdpPort</span>))
+}
+</code></pre></div><h3 id=通过访问页面来获取所有请求返回的数据>通过访问页面来获取所有请求返回的数据</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-golang data-lang=golang><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Run</span>(<span style=color:#a6e22e>url</span> <span style=color:#66d9ef>string</span>) {
+  <span style=color:#a6e22e>ctx</span>, <span style=color:#a6e22e>cancel</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>WithTimeout</span>(<span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>Background</span>(), <span style=color:#a6e22e>timeout</span>) <span style=color:#75715e>//该页面的超时时间，最好增加多一些缓冲时间，不然页面线程可能比获取数据的线程早退出
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>cancel</span>()
+
+  <span style=color:#75715e>//打开一个空白页
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>pt</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>devt</span>.<span style=color:#a6e22e>Create</span>(<span style=color:#a6e22e>ctx</span>)
+  <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+    <span style=color:#66d9ef>return</span>
+  }
+  <span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>devt</span>.<span style=color:#a6e22e>Close</span>(<span style=color:#a6e22e>ctx</span>, <span style=color:#a6e22e>pt</span>) <span style=color:#75715e>//退出时关闭
+</span><span style=color:#75715e></span>
+  <span style=color:#a6e22e>conn</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>rpcc</span>.<span style=color:#a6e22e>DialContext</span>(<span style=color:#a6e22e>ctx</span>, <span style=color:#a6e22e>pt</span>.<span style=color:#a6e22e>WebSocketDebuggerURL</span>)
+  <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+    <span style=color:#66d9ef>return</span>
+  }
+  <span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>conn</span>.<span style=color:#a6e22e>Close</span>()
+
+  <span style=color:#a6e22e>c</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>cdp</span>.<span style=color:#a6e22e>NewClient</span>(<span style=color:#a6e22e>conn</span>)
+
+  <span style=color:#75715e>// 该注释部分是模拟某种设备
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// err = c.Emulation.ClearDeviceMetricsOverride(ctx)
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// if err != nil {
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// 	return
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// }
+</span><span style=color:#75715e></span>
+  <span style=color:#75715e>// err = c.Emulation.SetDeviceMetricsOverride(ctx,
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// 	&amp;emulation.SetDeviceMetricsOverrideArgs{
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// 		Width:						 config.Device.WindowWidth,
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// 		Height:						config.Device.WindowHeight,
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// 		DeviceScaleFactor: 1,
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// 		Mobile:						config.Device.Mobile})
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// if err != nil {
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// 	return
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// }
+</span><span style=color:#75715e></span>
+  <span style=color:#a6e22e>domContent</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Page</span>.<span style=color:#a6e22e>DOMContentEventFired</span>(<span style=color:#a6e22e>ctx</span>)
+  <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+    <span style=color:#66d9ef>return</span>
+  }
+  <span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>domContent</span>.<span style=color:#a6e22e>Close</span>()
+
+  <span style=color:#75715e>// 批量处理错误
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> = <span style=color:#a6e22e>runBatch</span>(
+    <span style=color:#66d9ef>func</span>() <span style=color:#66d9ef>error</span> { <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>DOM</span>.<span style=color:#a6e22e>Enable</span>(<span style=color:#a6e22e>ctx</span>) },
+    <span style=color:#66d9ef>func</span>() <span style=color:#66d9ef>error</span> { <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Network</span>.<span style=color:#a6e22e>Enable</span>(<span style=color:#a6e22e>ctx</span>, <span style=color:#66d9ef>nil</span>) },
+    <span style=color:#66d9ef>func</span>() <span style=color:#66d9ef>error</span> { <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Page</span>.<span style=color:#a6e22e>Enable</span>(<span style=color:#a6e22e>ctx</span>) },
+  ); <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+    <span style=color:#66d9ef>return</span>
+  }
+
+  <span style=color:#75715e>// 监听每个请求收到的数据
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>go</span> <span style=color:#66d9ef>func</span>() {
+    <span style=color:#a6e22e>responseReceived</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Network</span>.<span style=color:#a6e22e>ResponseReceived</span>(<span style=color:#a6e22e>ctx</span>)
+    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+      <span style=color:#66d9ef>return</span>
+    }
+    <span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>responseReceived</span>.<span style=color:#a6e22e>Close</span>()
+    <span style=color:#a6e22e>ticker</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>time</span>.<span style=color:#a6e22e>NewTicker</span>(<span style=color:#a6e22e>timeout</span>)
+    <span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>ticker</span>.<span style=color:#a6e22e>Stop</span>()
+    <span style=color:#66d9ef>for</span> {
+      <span style=color:#66d9ef>select</span> {
+      <span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>ticker</span>.<span style=color:#a6e22e>C</span>:
+        <span style=color:#66d9ef>return</span>
+      <span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>ctx</span>.<span style=color:#a6e22e>Done</span>():
+        <span style=color:#66d9ef>return</span>
+      <span style=color:#66d9ef>case</span> <span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>responseReceived</span>.<span style=color:#a6e22e>Ready</span>(): <span style=color:#75715e>//每个请求获得的数据
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>ev</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>responseReceived</span>.<span style=color:#a6e22e>Recv</span>()
+        <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+          <span style=color:#a6e22e>time</span>.<span style=color:#a6e22e>Sleep</span>(<span style=color:#a6e22e>time</span>.<span style=color:#a6e22e>Millisecond</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>100</span>)
+          <span style=color:#66d9ef>break</span>
+        }
+        <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>bodyReply</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Network</span>.<span style=color:#a6e22e>GetResponseBody</span>(<span style=color:#a6e22e>ctx</span>, <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>network</span>.<span style=color:#a6e22e>GetResponseBodyArgs</span>{<span style=color:#a6e22e>RequestID</span>: <span style=color:#a6e22e>ev</span>.<span style=color:#a6e22e>RequestID</span>}); <span style=color:#a6e22e>err</span> <span style=color:#f92672>==</span> <span style=color:#66d9ef>nil</span> {
+          <span style=color:#75715e>//异步执行回调任务
+</span><span style=color:#75715e></span>          <span style=color:#75715e>// go func() {
+</span><span style=color:#75715e></span>          <span style=color:#75715e>// 	callback(ev, bodyReply.Body)
+</span><span style=color:#75715e></span>          <span style=color:#75715e>// }()
+</span><span style=color:#75715e></span>        }
+      }
+    }
+  }()
+  <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>err</span> = <span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Page</span>.<span style=color:#a6e22e>Navigate</span>(<span style=color:#a6e22e>ctx</span>, <span style=color:#a6e22e>page</span>.<span style=color:#a6e22e>NewNavigateArgs</span>(<span style=color:#a6e22e>url</span>))
+  <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+    <span style=color:#66d9ef>return</span>
+  }
+  <span style=color:#a6e22e>time</span>.<span style=color:#a6e22e>Sleep</span>(<span style=color:#a6e22e>timeout</span>)
+  <span style=color:#75715e>// 此处后加入你需要进行的操作，一个网站加载所有请求，和渲染页面都需要时间，	超时时间需要酌情设置。
+</span><span style=color:#75715e></span>  <span style=color:#75715e>// 比如点击事件啥的玩意
+</span><span style=color:#75715e></span>}
+
+<span style=color:#66d9ef>type</span> <span style=color:#a6e22e>runBatchFunc</span> <span style=color:#66d9ef>func</span>() <span style=color:#66d9ef>error</span>
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>runBatch</span>(<span style=color:#a6e22e>fn</span> <span style=color:#f92672>...</span><span style=color:#a6e22e>runBatchFunc</span>) <span style=color:#66d9ef>error</span> {
+  <span style=color:#a6e22e>eg</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>errgroup</span>.<span style=color:#a6e22e>Group</span>{}
+  <span style=color:#66d9ef>for</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>f</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>fn</span> {
+    <span style=color:#a6e22e>eg</span>.<span style=color:#a6e22e>Go</span>(<span style=color:#a6e22e>f</span>)
+  }
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>eg</span>.<span style=color:#a6e22e>Wait</span>()
+}
+</code></pre></div><blockquote><p>其实前面的操作已经可以获取到页面中所有请求返回的数据了,剩下的就是根据接口数据的特征来提取想要的数据。</p></blockquote><h3 id=封装点击事件>封装点击事件</h3><p>其实如果要更多功能，直接用<code>chromedp</code>可能是一个更好的选择。但是我们如果使用了<code>mafredri/cdp</code>，我们也可以参考<code>chromedp</code>的实现方式来封装一些常用功能。</p><h4 id=点击某个点>点击某个点</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-golang data-lang=golang><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>Click</span>(<span style=color:#a6e22e>clt</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>cdp</span>.<span style=color:#a6e22e>Client</span>, <span style=color:#a6e22e>x</span>, <span style=color:#a6e22e>y</span> <span style=color:#66d9ef>float64</span>) (<span style=color:#a6e22e>err</span> <span style=color:#66d9ef>error</span>) {
+  <span style=color:#a6e22e>ts</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>input</span>.<span style=color:#a6e22e>TouchPoint</span>{<span style=color:#a6e22e>X</span>: <span style=color:#a6e22e>x</span>, <span style=color:#a6e22e>Y</span>: <span style=color:#a6e22e>y</span>}
+  <span style=color:#a6e22e>err</span> = <span style=color:#a6e22e>clt</span>.<span style=color:#a6e22e>Input</span>.<span style=color:#a6e22e>DispatchTouchEvent</span>(<span style=color:#a6e22e>clt</span>.<span style=color:#a6e22e>Ctx</span>, <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>input</span>.<span style=color:#a6e22e>DispatchTouchEventArgs</span>{
+    <span style=color:#a6e22e>Type</span>:        <span style=color:#e6db74>&#34;touchStart&#34;</span>,
+    <span style=color:#a6e22e>TouchPoints</span>: []<span style=color:#a6e22e>input</span>.<span style=color:#a6e22e>TouchPoint</span>{<span style=color:#a6e22e>ts</span>},
+  })
+  <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+    <span style=color:#66d9ef>return</span>
+  }
+  <span style=color:#a6e22e>err</span> = <span style=color:#a6e22e>clt</span>.<span style=color:#a6e22e>Input</span>.<span style=color:#a6e22e>DispatchTouchEvent</span>(<span style=color:#a6e22e>clt</span>.<span style=color:#a6e22e>Ctx</span>, <span style=color:#f92672>&amp;</span><span style=color:#a6e22e>input</span>.<span style=color:#a6e22e>DispatchTouchEventArgs</span>{
+    <span style=color:#a6e22e>Type</span>:        <span style=color:#e6db74>&#34;touchEnd&#34;</span>,
+    <span style=color:#a6e22e>TouchPoints</span>: []<span style=color:#a6e22e>input</span>.<span style=color:#a6e22e>TouchPoint</span>{},
+  })
+  <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+    <span style=color:#66d9ef>return</span>
+  }
+  <span style=color:#66d9ef>return</span>
+}
+</code></pre></div><h4 id=点击某个元素>点击某个元素</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-golang data-lang=golang><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>ClickElement</span>(<span style=color:#a6e22e>clt</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>cdp</span>.<span style=color:#a6e22e>Client</span>, <span style=color:#a6e22e>el</span>, <span style=color:#a6e22e>text</span> <span style=color:#66d9ef>string</span>) (<span style=color:#a6e22e>err</span> <span style=color:#66d9ef>error</span>) {
+  <span style=color:#a6e22e>expression</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>fmt</span>.<span style=color:#a6e22e>Sprintf</span>(<span style=color:#e6db74>`</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>function contains(selector, text) </span><span style=color:#e6db74>{</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>  var elements = document.querySelectorAll(selector);
+</span><span style=color:#e6db74>  return Array.prototype.filter.call(elements, function(element)</span><span style=color:#e6db74>{</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>    return RegExp(text).test(element.textContent);
+</span><span style=color:#e6db74>  });
+</span><span style=color:#e6db74>}
+</span><span style=color:#e6db74>contains(&#39;%s&#39;, &#39;%s&#39;).forEach((value, index, array) =&gt; </span><span style=color:#e6db74>{</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>  value.click();
+</span><span style=color:#e6db74>});
+</span><span style=color:#e6db74></span><span style=color:#e6db74>`</span>, <span style=color:#a6e22e>el</span>, <span style=color:#a6e22e>text</span>)
+  <span style=color:#a6e22e>evalArgs</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>runtime</span>.<span style=color:#a6e22e>NewEvaluateArgs</span>(<span style=color:#a6e22e>expression</span>)
+  <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>err</span> = <span style=color:#a6e22e>clt</span>.<span style=color:#a6e22e>Runtime</span>.<span style=color:#a6e22e>Evaluate</span>(<span style=color:#a6e22e>c</span>.<span style=color:#a6e22e>Ctx</span>, <span style=color:#a6e22e>evalArgs</span>)
+  <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+    <span style=color:#66d9ef>return</span>
+  }
+  <span style=color:#66d9ef>return</span>
+}
+</code></pre></div><h3 id=额外的话>额外的话</h3><p>如果要搭建好整个基于cdp的爬虫，当然要做很多封装的工作。比如我们可以封装一台IPhone6 😏</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-golang data-lang=golang><span style=color:#66d9ef>type</span> <span style=color:#a6e22e>Device</span> <span style=color:#66d9ef>struct</span> {
+  <span style=color:#a6e22e>WindowWidth</span>  <span style=color:#66d9ef>int</span>
+  <span style=color:#a6e22e>WindowHeight</span> <span style=color:#66d9ef>int</span>
+  <span style=color:#a6e22e>Mobile</span>       <span style=color:#66d9ef>bool</span>
+}
+
+<span style=color:#66d9ef>func</span> <span style=color:#a6e22e>IPhone6</span>() <span style=color:#a6e22e>Device</span> {
+  <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>Device</span>{
+    <span style=color:#a6e22e>WindowWidth</span>:  <span style=color:#ae81ff>375</span>,
+    <span style=color:#a6e22e>WindowHeight</span>: <span style=color:#ae81ff>667</span>,
+    <span style=color:#a6e22e>Mobile</span>:       <span style=color:#66d9ef>true</span>,
+  }
+}
+</code></pre></div><h4 id=启动一个爬虫任务>启动一个爬虫任务</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-golang data-lang=golang><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>init</span>() {
+  <span style=color:#a6e22e>NewCrawler</span>(
+    <span style=color:#a6e22e>NewDriver</span>(<span style=color:#a6e22e>Config</span>{<span style=color:#a6e22e>Timeout</span>: <span style=color:#a6e22e>timeout</span>, <span style=color:#a6e22e>Device</span>: <span style=color:#a6e22e>IPhone6</span>()}),
+  ).<span style=color:#a6e22e>Run</span>()
+}
+</code></pre></div></div><div class=post-copyright><p class=copyright-item><span>Author:</span>
+<span>Rabbee</span></p><p class=copyright-item><span>Link:</span>
+<a href=https://blog.rabbee.cn/2020/02/09/crawler-cdp/>https://blog.rabbee.cn/2020/02/09/crawler-cdp/</span></p><p class="copyright-item lincese">本文采用<a rel=license href=http://creativecommons.org/licenses/by-nc/4.0/ target=_blank>知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p></div><div class=post-tags><section><i class="iconfont icon-tag"></i>Tag(s):
+<span class=tag><a href=https://blog.rabbee.cn/tags/crawler/>#crawler</a></span>
+<span class=tag><a href=https://blog.rabbee.cn/tags/chromedp/>#chromedp</a></span>
+<span class=tag><a href=https://blog.rabbee.cn/tags/cdp/>#cdp</a></span>
+<span class=tag><a href=https://blog.rabbee.cn/tags/headless-shell/>#headless-shell</a></span>
+<span class=tag><a href=https://blog.rabbee.cn/tags/docker/>#docker</a></span>
+<span class=tag><a href=https://blog.rabbee.cn/tags/golang/>#golang</a></span></section><section><a href=javascript:window.history.back();>back</a></span> ·
+<span><a href=https://blog.rabbee.cn>home</a></span></section></div><div class=post-nav><a href=https://blog.rabbee.cn/2020/01/31/linux-common-commands/ class=prev rel=prev title=Linux常用命令><i class="iconfont icon-left"></i>&nbsp;Linux常用命令</a></div><div class=post-comment><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"crabbit"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></article></div></main><footer class=footer><p class=copyright><span itemprop=copyrightYear><a href=https://blog.rabbee.cn target=_blank rel="external nofollow">Copyright &copy; 2017 - 2020</a></span>
+<span class=with-love><a href=javascript:void(0); class=theme-switch><i class="iconfont icon-love"></i></a></span><span class=author itemprop=copyrightHolder><a href=/about>Rabbee</a></span></p><p><a href=http://www.beian.miit.gov.cn/ target=_blank rel="external nofollow">粤ICP备20004985号</a> |
+<span>Powered by <a href=https://gohugo.io/ target=_blank rel="external nofollow">Hugo</a> & <a href=https://github.com/liuzc/leaveit target=_blank rel="external nofollow">LeaveIt</a></span></p></footer><script src=/js/vendor_no_gallery.min.js async></script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-157514920-1','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script><script>var _hmt=_hmt||[];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?3e00c4d00e34ee96078ee6798917c6f3";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s);})();</script></div></body></html>
